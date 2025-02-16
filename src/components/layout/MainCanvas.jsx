@@ -10,6 +10,8 @@ import carImage from "../../assets/images/car.jpg";
 import PikachuImage from "../../assets/images/PIKA.jpg";
 import TreeImage from "../../assets/images/TREE.jpg";
 
+
+// De component die het canvas beheert en de afbeelding bewerkt
 function MainCanvas({ setImage, image }) {
   const canvasRef = useRef(null);
   const p5Instance = useRef(null);
@@ -28,12 +30,14 @@ function MainCanvas({ setImage, image }) {
 
   const defaultImageArray = [carImage, PikachuImage, TreeImage];
 
+   // Effect om de afbeelding te updaten op basis van de gekozen afbeelding index
   useEffect(() => {
     if (chosenImageIndex !== null) {
       setImage(defaultImageArray[chosenImageIndex]);
     }
   }, [chosenImageIndex, setImage]);
 
+    // Dropzone configuratie voor het uploaden van afbeeldingen.
   const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     onDrop: (acceptedFiles) => {
@@ -42,12 +46,12 @@ function MainCanvas({ setImage, image }) {
     },
   });
 
-  // Fetch emojis from the API
+  // Effect om emoji's op te halen van de API.
   useEffect(() => {
     fetchEmojis().then((emojis) => setEmojiSrc(emojis));
   }, []);
 
-  // Update the current emoji and generate positions when the `emoji` filter is toggled on
+  // Effect om de huidige emoji te updaten en posities te genereren wanneer het 'emoji' filter is ingeschakeld   
   useEffect(() => {
     if (filters.emoji && emojiSrc.length > 0 && image) {
       const randomIndex = Math.floor(Math.random() * emojiSrc.length);
@@ -64,7 +68,7 @@ function MainCanvas({ setImage, image }) {
     }
   }, [filters.emoji, emojiSrc, image]);
 
-  // Function to generate emoji positions
+  // Functie die de posities van de emoji's genereert in een cirkel
   const generateEmojiPositions = (imgWidth, imgHeight) => {
     const MIN_AMOUNT_EMOJIS = 10;
     const MAX_AMOUNT_EMOJIS = 50;
@@ -87,6 +91,7 @@ function MainCanvas({ setImage, image }) {
     return emojis;
   };
 
+    // Effect om de canvas op te slaan als de `saveImage` state is gewijzigd.
   useEffect(() => {
     if (saveImage && p5Instance.current) {
       p5Instance.current.saveCanvas("myCanvas", "png");
@@ -94,6 +99,7 @@ function MainCanvas({ setImage, image }) {
     }
   }, [saveImage, setSaveImage]);
 
+    // Effect om de p5.js canvas te initialiseren en te updaten.
   useEffect(() => {
     const sketch = (p) => {
       let img;

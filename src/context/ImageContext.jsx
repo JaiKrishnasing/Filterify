@@ -1,9 +1,10 @@
 import React, { createContext, useState, useContext } from "react";
 
-// Create the Context
+// De Context aanmaken
 const ImageContext = createContext();
 
-// Create the provider component
+// ImageProvider component die de context beschikbaar maakt voor alle kinderen
+// Beheert de staat voor breedte, hoogte, tekst, opslaan, gekozen afbeelding index, filters en custom filters
 export const ImageProvider = ({ children }) => {
   const [width, setWidth] = useState(100);
   const [height, setHeight] = useState(100);
@@ -11,46 +12,47 @@ export const ImageProvider = ({ children }) => {
   const [saveImage, setSaveImage] = useState(false);
   const [chosenImageIndex, setChosenImageIndex] = useState(null);
 
-  // Unified state for filters
+  // Unified state voor alle filters
   const [filters, setFilters] = useState({
-    alpha: 255, // Alpha channel (0-255)
+    alpha: 255, // Alpha kanaal (0-255)
     saturation: 100, // Saturation (0-200)
     hue: 0, // Hue (0-360),
     invert: false,
     noiseIntensity: 0, // Noise intensity (0-10)
     temperature: -70, // Temperature (-100 to 100)
-    emoji: false,
+    emoji: false, // Emoji overlay aan/uit (met boolean)
   });
 
+  // State voor de custom filters (aan/uit)
   const [customFilters, setCustomFilters] = useState({
     custom_Filter_1: false,
     custom_Filter_2: false,
     custom_Filter_3: false,
   });
 
-  // Predefined filter settings for each custom filter
+  // Vooraf gedefinieerde filter instellingen voor elke custom filter
   const customFilterSettings = {
     custom_Filter_1: {
-      saturation: 80, // Desaturate the image
-      hue: 120, // Green hue (120 is green in the HSL color space)
-      temperature: 70, // Neutral temperature
-      emoji: true, // Enable emoji overlay
+      saturation: 80,
+      hue: 120, 
+      temperature: 70, 
+      emoji: true, 
     },
     custom_Filter_2: {
-      saturation: 100, // Keep some saturation
-      hue: 60, // Yellow hue (60 is yellow in the HSL color space)
-      temperature: -50, // Cooler temperature
-      invert: true, // Invert colors
-      noiseIntensity: 2, // Add some noise
+      saturation: 100, 
+      hue: 60, 
+      temperature: -50, 
+      invert: true,
+      noiseIntensity: 2, 
     },
     custom_Filter_3: {
-      saturation: 200, // Highly saturated
-      hue: 270, // Purple hue (270 is purple in the HSL color space)
-      temperature: 0, // Neutral temperature
+      saturation: 200, 
+      hue: 270, 
+      temperature: 0, 
     },
   };
 
-  // Function to update a specific filter
+  // unctie om een specifieke filter te updaten
   const updateFilter = (filterName, value) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
@@ -58,7 +60,7 @@ export const ImageProvider = ({ children }) => {
     }));
   };
 
-  // Function to apply custom filter settings
+  // Past de instellingen van een custom filter toe
   const applyCustomFilterSettings = (filterName) => {
     if (customFilters[filterName]) {
       setFilters((prevFilters) => ({
@@ -66,7 +68,7 @@ export const ImageProvider = ({ children }) => {
         ...customFilterSettings[filterName],
       }));
     } else {
-      // Reset to default filter settings if the custom filter is disabled
+      // eset naar de standaard filter instellingen indien het custom filter is uitgeschakeld
       setFilters((prevFilters) => ({
         ...prevFilters,
         saturation: 100,
@@ -79,7 +81,7 @@ export const ImageProvider = ({ children }) => {
     }
   };
 
-  // Function to reset all filters and custom filters
+  // Reset alle filters en custom filters naar de standaard waarden.
   const resetFilters = () => {
     setFilters({
       alpha: 255,

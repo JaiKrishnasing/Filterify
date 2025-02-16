@@ -1,14 +1,20 @@
+// Alle Filters van de website
+// staan in dit bestand
+
 export class Filters {
   constructor() {
+    // Slaat de originele pixeldata op
     this.originalPixels = null;
     this.noisePixels = null;
   }
 
+  // Slaat de originele pixeldata op van de afbeelding
   storeOriginalPixels(img) {
     img.loadPixels();
     this.originalPixels = new Uint8Array(img.pixels);
   }
 
+  // Zet de afbeelding terug naar de originele pixels 
   resetToOriginal(img) {
     if (!this.originalPixels) return;
 
@@ -17,6 +23,7 @@ export class Filters {
     img.updatePixels();
   }
 
+  // Past de opgegeven filters toe aan de afbeelding
   applyFilters(img, filters) {
     if (!this.originalPixels) return;
     img.loadPixels();
@@ -47,44 +54,44 @@ export class Filters {
       let b = pixels[i + 2];
       let a = pixels[i + 3];
 
-      // Apply alpha filter
+      // Pas alpha filter toe
       if (filters.alpha !== undefined) {
         a = filters.alpha;
       }
 
-      // Apply saturation filter
+      // Pas saturation filter toe
       if (filters.saturation !== undefined) {
         const [h, s, l] = this.rgbToHsl(r, g, b);
         [r, g, b] = this.hslToRgb(h, filters.saturation / 100, l / 100);
       }
 
-      // Apply hue filter
+      // Pas hue filter toe
       if (filters.hue !== undefined) {
         const [h, s, l] = this.rgbToHsl(r, g, b);
         [r, g, b] = this.hslToRgb(filters.hue, s / 100, l / 100);
       }
 
-      // Apply temperature filter
+      // Pas temperature filter toe
       if (filters.temperature !== undefined) {
         r = this.constrain(r + filters.temperature, 0, 255);
         b = this.constrain(b - filters.temperature, 0, 255);
       }
 
-      // Apply invert filter
+      // Pas invert filter toe
       if (filters.invert) {
         r = 255 - r;
         g = 255 - g;
         b = 255 - b;
       }
 
-      // Apply random noise filter
+      // Pas random noise filter toe
       if (filters.noiseIntensity !== undefined && this.noisePixels) {
         r = this.constrain(r + this.noisePixels[i], 0, 255);
         g = this.constrain(g + this.noisePixels[i + 1], 0, 255);
         b = this.constrain(b + this.noisePixels[i + 2], 0, 255);
       }
 
-      // Update pixel values
+      // Update de pixelwaarde
       pixels[i] = r;
       pixels[i + 1] = g;
       pixels[i + 2] = b;
@@ -94,7 +101,7 @@ export class Filters {
     img.updatePixels();
   }
 
-  // Helper functions
+  // Hulp functies
   rgbToHsl(r, g, b) {
     r /= 255;
     g /= 255;
@@ -172,10 +179,12 @@ export class Filters {
     return [r, g, b];
   }
 
+  // Willekeurig getal functie
   random(min, max) {
     return Math.random() * (max - min) + min;
   }
 
+  // Beperkt een waarde tot een bereik
   constrain(value, min, max) {
     return Math.min(Math.max(value, min), max);
   }
